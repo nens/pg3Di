@@ -6,7 +6,7 @@ It is meant to reduce the amount of SQL needed to achieve the same thing. It doe
 ## Naming system
 Functions, arguments and outputs are systematically named, based on a number of objects. The naming is meant to be intuitive and stay as close as possible to the naming systems of existing 3Di tooling, such as the threedigrid python library and the names in the 3Di spatialite. The following object groups are distinguished:
 
-## Node object - Object that refers to only one connection node
+### Node object - Object that refers to only one connection node
 ConnectionNode
 Manhole
 Surface
@@ -14,7 +14,7 @@ ImperviousSurface
 Lateral
 OneDBoundaryCondition
 
-## Line - Object that connects two connection nodes
+### Line - Object that connects two connection nodes
 Channel
 Culvert
 Weir
@@ -22,45 +22,41 @@ Orifice
 Pumpstation
 Pipe
 
-## Settings
-global settings
-numerical settings
-Aggregation settings
-groundwater settings
-Simple Infiltration Settings
-infiltration settings
-Interflow settings
+### Settings
+GlobalSettings
+NumericalSettings
+AggregationSettings
+GroundwaterSettings
+SimpleInfiltrationSettings
+InfiltrationSettings
+InterflowSettings
 
-## 2D Objects
-2D Boundary Condition
-2D Lateral
-Grid Refinement Line
-Grid Refinement Area
+### 2D Objects
+TwoDBoundaryCondition
+TwoDLateral
+GridRefinementLine
+GridRefinementArea
 Obstacle
 Levee
 
-## Other objects
-Cross section location
-Cross section definition
+### Other objects
+CrossSectionLocation
+CrossSectionDefinition
 Breach
-Control
-Surface Parameters
+Control -- ?? 
+SurfaceParameters
 
-## Network
+### Network
 A group of connected node objects and lines
 
-## Defaults
+### Defaults
 
 
-## Constraints
+### Constraints
 
 
-## Backups
+### Backups
 
 
-## Stylings
+### Stylings
 QGIS stylings saved in PostGIS database
-
-## Extents
-1D Extent
-2D Extent
