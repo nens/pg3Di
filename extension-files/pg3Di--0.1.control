@@ -1,0 +1,5 @@
+# pg3Di extension
+comment = 'Store, analyze and manipulate 3Di models'
+default_version = '0.1'
+module_pathname = '$libdir/pg3Di'
+relocatable = false

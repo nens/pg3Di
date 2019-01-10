@@ -1,0 +1,13 @@
+NextPipes
+NextChannels
+NumConnectionsUpstream
+NumConnectionsDownstream
+NumConnections
+InterpolateReferenceLevel(channel_id integer, fraction double precision, include_adjacent_channels boolean)
+InterpolateBankLevel
+InterpolateInitialWaterLevel
+
+Insert functions with defaults
+	 (change default values of v2 tables: ALTER TABLE users ALTER COLUMN lang SET DEFAULT 'en_GB');
+	
+
