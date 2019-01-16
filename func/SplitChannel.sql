@@ -43,20 +43,29 @@ EXAMPLE:
 	;	
 
 */
-DROP FUNCTION IF EXISTS splitchannel(integer,geometry,double precision,double precision);
+DROP TYPE IF EXISTS SplitChannel_ReturnType CASCADE;
+CREATE TYPE SplitChannel_ReturnType AS (
+        new_channel integer,
+	    new_start_node integer,
+	    new_end_node integer,
+	    new_cross_section_locations integer[]	
+    )
+;
+
+DROP FUNCTION IF EXISTS splitchannel(bigint, geometry, double precision,double precision);
 CREATE OR REPLACE FUNCTION SplitChannel (
-	channel_id integer,
+	channel_id bigint,
 	locations geometry,
     tolerance double precision default 0.001,
-    vertex_add_dist double precision default 1.0,
-    new_channel OUT integer,
-	new_start_node OUT integer,
-	new_end_node OUT integer,
-	new_cross_section_locations OUT integer[]	
-
+    vertex_add_dist double precision default 1.0 /*,
+    new_channel OUT bigint,
+	new_start_node OUT bigint,
+	new_end_node OUT bigint,
+	new_cross_section_locations OUT bigint[]	
+*/
 )
 RETURNS
-	setof record
+	setof SplitChannel_ReturnType
 AS
 $BODY$
 	DECLARE 
@@ -128,13 +137,14 @@ $BODY$
              SELECT ST_EndPoint(geom) AS geom FROM SplitChannel_Segments WHERE cut_at_end AND NOT ST_Equals(ST_EndPoint(geom), ST_EndPoint((channel).the_geom))
         )
         SELECT  nextval('v2_connection_nodes_id_seq') AS id, 
-                NULL AS storage_area, 
-                ((1-ST_LineLocatePoint((channel).the_geom, cil.geom)) * cono_start.initial_waterlevel) 
+                NULL::double precision AS storage_area, 
+                (
+                    ((1-ST_LineLocatePoint((channel).the_geom, cil.geom)) * cono_start.initial_waterlevel) 
                     +
-                (ST_LineLocatePoint((channel).the_geom, cil.geom) * cono_end.initial_waterlevel)
-                    AS initial_waterlevel, 
+                    (ST_LineLocatePoint((channel).the_geom, cil.geom) * cono_end.initial_waterlevel)
+                )::double precision AS initial_waterlevel, 
                 cil.geom AS the_geom, 
-                'added by SplitChannel function'  AS code
+                'added by SplitChannel function'::text  AS code
         FROM    cono_insert_locations AS cil
         JOIN    existing_cono_locations AS old
             ON  ST_Disjoint(old.geom, cil.geom)
@@ -264,8 +274,8 @@ $BODY$
         ;
         
         INSERT INTO v2_cross_section_location(id, channel_id, definition_id, reference_level, friction_type, friction_value, bank_level, the_geom, code)
-		SELECT 	id, channel_id, definition_id, reference_level, friction_type, friction_value, bank_level, the_geom, code
-		FROM	SplitChannel_NewCrossSectionLocations
+		SELECT 	id, nw_xsec.channel_id, definition_id, reference_level, friction_type, friction_value, bank_level, the_geom, code
+		FROM	SplitChannel_NewCrossSectionLocations AS nw_xsec
 		;
 	
 		-- Insert the original cross section locations with the proper channel_id
@@ -284,7 +294,7 @@ $BODY$
 		;
 
 		RETURN QUERY
-		SELECT chn.id, nw_start_node.id, nw_end_node.id, array_agg(xsec.id)
+		SELECT chn.id::integer, nw_start_node.id::integer, nw_end_node.id::integer, array_agg(xsec.id::integer)
 		FROM	SplitChannel_NewChannels AS chn
 		LEFT JOIN	SplitChannel_NewConnectionNodes AS nw_start_node
 			ON	chn.connection_node_start_id = nw_start_node.id
@@ -292,7 +302,7 @@ $BODY$
 			ON	chn.connection_node_end_id = nw_end_node.id
 		LEFT JOIN	SplitChannel_NewCrossSectionLocations AS xsec
 			ON 	xsec.channel_id = chn.id
-		GROUP BY 	chn.id
+		GROUP BY 	chn.id, nw_start_node.id, nw_end_node.id
 		;
 		
 	END;
