@@ -8,7 +8,20 @@ INPUTS:
 - [OPTIONAL] <Optional input arguments + their description>
 
 OUTPUTS: 
-- <What is returned by the function>
+- Returns a compound data type (multiple columns):
+	count_total
+	count_mixed
+	count_rain_water
+	count_dry_weather
+	count_transport
+	count_spillway
+	count_syphon
+	count_storage
+	count_storage_tank
+	invert_level_min
+	invert_level_avg
+	invert_level_max  OUT double precision
+
 - <How is the database affected / what edits in which tables result from calling the function>
 
 

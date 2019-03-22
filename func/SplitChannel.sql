@@ -33,6 +33,9 @@ REMARKS:
     SELECT max(id) FROM v2_cross_section_location; --469
     ALTER SEQUENCE v2_cross_section_location_id_seq RESTART WITH 470;
 
+- Known issues: 
+		- If multiple connection nodes are encountered at the location of the split point, a v2_channel will be inserted for each of the encountered v2_connection_nodes
+		- Sometimes cross_section_locations end up at start or end vertex of the channel. Perhaps this happens when the split point is at a vertex where a cross section location is?
 EXAMPLE:
 
 	SELECT 	SplitChannel (chn.id, ST_Union(csp.geom))

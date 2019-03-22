@@ -21,15 +21,15 @@ REMARKS:
 EXAMPLE(S):
 	[1]
 	-- Get the number of connections for connection node 23:
-	SELECT NumConnections('v2_connection_nodes', 23); 
+	SELECT NumConnectedLines('v2_connection_nodes', 23); 
 	
 	[2]
-	-- List all connection nodes without any connections
-	SELECT * FROM v2_connection_nodes WHERE NumConnections('v2_connection_nodes', id) = 0;
+	-- Delete all connection nodes without any connections
+	DELETE FROM v2_connection_nodes WHERE NumConnectedLines('v2_connection_nodes', id) = 0;
 
 	[3]
 	-- List all boundary conditions with <> 1 connection
-	SELECT * FROM v2_boundary_conditions WHERE NumConnections('v2_connection_nodes', connection_node_id) != 1;
+	SELECT * FROM v2_boundary_conditions WHERE NumConnectedLines('v2_connection_nodes', connection_node_id) != 1;
 */
 
 
